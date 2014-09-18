@@ -26,6 +26,7 @@ public class CoverageFinder extends AbstractCatalogFinder {
         String ws = getAttribute(request, "workspace");
         String cs = getAttribute(request, "coveragestore");
         String c = getAttribute(request, "coverage");
+        
 
         //ensure referenced resources exist
         if ( ws != null && catalog.getWorkspaceByName( ws ) == null ) {
@@ -47,13 +48,24 @@ public class CoverageFinder extends AbstractCatalogFinder {
         }
 
         if ( c != null ) {
+            Form form = request.getResourceRef().getQueryAsForm();
+            String quietOnNotFoundS=form.getFirstValue("quietOnNotFound", "False");
+            boolean quietOnNotFound=Boolean.parseBoolean(quietOnNotFoundS);
             if ( cs != null && catalog.getCoverageByCoverageStore(catalog.getCoverageStoreByName(ws, cs), c) == null) {
-                throw new RestletException( "No such coverage: "+ws+","+cs+","+c, Status.CLIENT_ERROR_NOT_FOUND );
+                if(!quietOnNotFound){
+                    throw new RestletException( "No such coverage: "+ws+","+cs+","+c, Status.CLIENT_ERROR_NOT_FOUND );
+                }else{
+                    return null;
+                }
             } else {
                 //look up by workspace/namespace
                 NamespaceInfo ns = catalog.getNamespaceByPrefix( ws );
                 if ( ns == null || catalog.getCoverageByName( ns, c ) == null ) {
-                    throw new RestletException( "No such coverage: "+ws+","+c, Status.CLIENT_ERROR_NOT_FOUND );
+                    if(!quietOnNotFound){
+                        throw new RestletException( "No such coverage: "+ws+","+c, Status.CLIENT_ERROR_NOT_FOUND );
+                    }else{
+                        return null;
+                    }
                 }
             }
         }

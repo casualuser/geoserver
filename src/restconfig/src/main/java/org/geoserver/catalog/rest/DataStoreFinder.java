@@ -7,6 +7,7 @@ package org.geoserver.catalog.rest;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestletException;
+import org.restlet.data.Form;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -29,6 +30,13 @@ public class DataStoreFinder extends AbstractCatalogFinder {
             throw new RestletException( "No such workspace: " + ws, Status.CLIENT_ERROR_NOT_FOUND );
         }
         if ( ds != null && catalog.getDataStoreByName(ws, ds) == null && !"default".equals(ds)) {
+            Form form = request.getResourceRef().getQueryAsForm();
+            String quietOnNotFoundS=form.getFirstValue("quietOnNotFound", "False");
+            boolean quietOnNotFound=Boolean.parseBoolean(quietOnNotFoundS);            
+            //ensure it exists
+            if(quietOnNotFound){
+                return null;
+            }
             throw new RestletException( "No such datastore: " + ws + "," + ds, Status.CLIENT_ERROR_NOT_FOUND );
         }
         

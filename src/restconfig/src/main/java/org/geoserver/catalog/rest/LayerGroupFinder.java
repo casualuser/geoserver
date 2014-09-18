@@ -7,6 +7,7 @@ package org.geoserver.catalog.rest;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestletException;
+import org.restlet.data.Form;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -29,11 +30,21 @@ public class LayerGroupFinder extends AbstractCatalogFinder {
         }
 
         if ( lg != null) { 
+            Form form = request.getResourceRef().getQueryAsForm();
+            String quietOnNotFoundS=form.getFirstValue("quietOnNotFound", "False");
+            boolean quietOnNotFound=Boolean.parseBoolean(quietOnNotFoundS);            
+            //ensure it exists
             if (ws != null && catalog.getLayerGroupByName( ws, lg ) == null) {
+                if(quietOnNotFound){
+                    return null;
+                }
                 throw new RestletException(String.format("No such layer group %s in workspace %s", 
                     lg, ws), Status.CLIENT_ERROR_NOT_FOUND );
             }
             if (ws == null && catalog.getLayerGroupByName( lg ) == null) {
+                if(quietOnNotFound){
+                    return null;
+                }
                 throw new RestletException( "No such layer group " + lg, Status.CLIENT_ERROR_NOT_FOUND );
             }
         }

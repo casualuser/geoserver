@@ -36,14 +36,27 @@ public class FeatureTypeFinder extends AbstractCatalogFinder {
         }
         
         if ( ft != null ) {
+            Form form = request.getResourceRef().getQueryAsForm();
+            String quietOnNotFoundS=form.getFirstValue("quietOnNotFound", "False");
+            boolean quietOnNotFound=Boolean.parseBoolean(quietOnNotFoundS);     
             if ( ds != null &&
                     catalog.getFeatureTypeByDataStore(catalog.getDataStoreByName(ws, ds), ft) == null) {
+                
+                //ensure it exists
+                if(quietOnNotFound){
+                    return null;
+                }
                 throw new RestletException( "No such feature type: "+ws+","+ds+","+ft, Status.CLIENT_ERROR_NOT_FOUND );
             }
             else {
                 //look up by workspace/namespace
                 NamespaceInfo ns = catalog.getNamespaceByPrefix( ws );
                 if ( ns == null || catalog.getFeatureTypeByName( ns, ft ) == null ) {
+                    
+                    //ensure it exists
+                    if(quietOnNotFound){
+                        return null;
+                    }
                     throw new RestletException( "No such feature type: "+ws+","+ft, Status.CLIENT_ERROR_NOT_FOUND );
                 }
             }

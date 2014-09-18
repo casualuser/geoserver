@@ -12,6 +12,7 @@ import org.geoserver.platform.ContextLoadedEvent;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.MediaTypes;
 import org.geotools.util.Version;
+import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
@@ -39,11 +40,21 @@ public class StyleFinder extends AbstractCatalogFinder implements ApplicationLis
         }
         //check style exists if specified
         if ( style != null) {
+            Form form = request.getResourceRef().getQueryAsForm();
+            String quietOnNotFoundS=form.getFirstValue("quietOnNotFound", "False");
+            boolean quietOnNotFound=Boolean.parseBoolean(quietOnNotFoundS);            
+            //ensure it exists
             if (workspace != null && catalog.getStyleByName( workspace, style ) == null) {
+                if(quietOnNotFound){
+                    return null;
+                }
                 throw new RestletException(String.format("No such style %s in workspace %s", 
                     style, workspace), Status.CLIENT_ERROR_NOT_FOUND );
             }
             if (workspace == null && catalog.getStyleByName( style ) == null) {
+                if(quietOnNotFound){
+                    return null;
+                }
                 throw new RestletException( "No such style: " + style, Status.CLIENT_ERROR_NOT_FOUND );
             }
         }
