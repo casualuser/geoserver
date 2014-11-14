@@ -416,4 +416,9 @@ public class LayerInfoImpl implements LayerInfo {
     public void setAbstract(String abstractTxt) {
         this.abstractTxt = abstractTxt;
     }
+
+    @Override
+    public String getPrefixedName() {
+        return prefixedName();
+    }
 }

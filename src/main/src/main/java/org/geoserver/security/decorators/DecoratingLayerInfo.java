@@ -17,7 +17,6 @@ import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
 
 /**
@@ -180,5 +179,10 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
     @Override
     public void setAbstract(String abstractTxt) {
         delegate.setAbstract(abstractTxt);
+    }
+
+    @Override
+    public String getPrefixedName() {
+        return delegate.getPrefixedName();
     }
 }

@@ -169,4 +169,9 @@ public class DecoratingLayerGroupInfo extends AbstractDecorator<LayerGroupInfo> 
         return new StringBuilder(getClass().getSimpleName()).append('[').append(delegate).append(
                 ']').toString();
     }
+
+    @Override
+    public String getPrefixedName() {
+        return delegate.prefixedName();
+    }
 }

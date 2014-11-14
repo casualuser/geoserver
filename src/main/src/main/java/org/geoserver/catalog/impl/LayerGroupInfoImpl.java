@@ -377,4 +377,9 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
         return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
                 .toString();
     }
+
+    @Override
+    public String getPrefixedName() {
+        return prefixedName();
+    }
 }

@@ -5,7 +5,7 @@
  */
 package org.geoserver.jdbcconfig.internal;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -439,7 +439,7 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
     @Override
     public Object visit(Not filter, Object extraData) {
         
-        return (StringBuilder) filter.getFilter().accept(this, append (extraData, " NOT "));
+        return filter.getFilter().accept(this, append (extraData, " NOT "));
 
     }
 
@@ -522,7 +522,9 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
 
         StringBuilder builder = append(extraData,
                 "oid IN (select oid from object_property where property_type in (:",
-                propertyTypesParam, ") and value IS NULL) /* ", filter.toString(), " */ \n");
+                propertyTypesParam,
+                ") and value IS NULL) OR oid IN (select oid from object where oid not in (select oid from object_property where property_type in (:"
+                        + propertyTypesParam + "))) /* ", filter.toString(), " */ \n");
         return builder;
     }
 
