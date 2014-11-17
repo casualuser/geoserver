@@ -5,11 +5,10 @@
  */
 package org.geoserver.gwc.layer;
 
-import static com.google.common.base.Objects.equal;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Throwables.propagate;
-import static com.google.common.collect.Maps.newConcurrentMap;
+import static com.google.common.base.Objects.*;
+import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Throwables.*;
+import static com.google.common.collect.Maps.*;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,7 +37,6 @@ import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.TileLayerDispatcher;
-import org.geowebcache.locks.LockProvider;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -95,15 +93,7 @@ public class CatalogConfiguration implements Configuration {
                             + "' does not exist.");
                 }
 
-                LayerInfo layerInfo = geoServerCatalog.getLayer(layerId);
-                if (layerInfo != null) {
-                    tileLayer = new GeoServerTileLayer(layerInfo, gridSetBroker, tileLayerInfo);
-                } else {
-                    LayerGroupInfo lgi = geoServerCatalog.getLayerGroup(layerId);
-                    if (lgi != null) {
-                        tileLayer = new GeoServerTileLayer(lgi, gridSetBroker, tileLayerInfo);
-                    }
-                }
+                tileLayer = new GeoServerTileLayer(layerId, gridSetBroker, tileLayerInfo);
             } finally {
                 lock.readLock().unlock();
             }
