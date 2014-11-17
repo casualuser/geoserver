@@ -749,6 +749,8 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             }
 
             return mostRestrictive;
+        } else if(info instanceof StyleInfo){
+            return buildWrapperPolicy(accessManager, user, info, ((StyleInfo) info).getName());
         }
 
         throw new IllegalArgumentException("Can't build wrapper policy for objects of type "
@@ -1461,7 +1463,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             return filter;
         }
 
-        if (StyleInfo.class.isAssignableFrom(infoType) || MapInfo.class.isAssignableFrom(infoType)) {
+        if (MapInfo.class.isAssignableFrom(infoType)) {
             // these kind of objects are not secured
             return filter;
         }
