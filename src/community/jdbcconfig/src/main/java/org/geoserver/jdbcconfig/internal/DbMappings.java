@@ -5,11 +5,8 @@
  */
 package org.geoserver.jdbcconfig.internal;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static org.geoserver.jdbcconfig.internal.DbUtils.logStatement;
-import static org.geoserver.jdbcconfig.internal.DbUtils.params;
+import static com.google.common.base.Preconditions.*;
+import static org.geoserver.jdbcconfig.internal.DbUtils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -645,6 +642,10 @@ public class DbMappings {
                 // HACK for derived property, ModificationProxy evaluates it to old value. Remove
                 // when layer name is decoupled from resource name
                 value = ((LayerInfo) object).getResource().getName();
+            } else if (object instanceof LayerInfo && "title".equalsIgnoreCase(propertyName)) {
+                // HACK for derived property, ModificationProxy evaluates it to old value. Remove
+                // when layer name is decoupled from resource name
+                value = ((LayerInfo) object).getResource().getTitle();
             } else {
                 // proceed as it should
                 value = ff.property(propertyName).evaluate(object);

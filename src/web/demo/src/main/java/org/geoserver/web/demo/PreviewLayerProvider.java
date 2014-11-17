@@ -165,10 +165,12 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
         // need to get only advertised and enabled layers
         Filter enabledFilter = Predicates.or(Predicates.isNull("resource.enabled"),
                 Predicates.equal("resource.enabled", true));
+        Filter storeEnabledFilter = Predicates.or(Predicates.isNull("resource.store.enabled"),
+                Predicates.equal("resource.store.enabled", true));
         Filter advertisedFilter = Predicates.or(Predicates.isNull("resource.advertised"),
                 Predicates.equal("resource.advertised", true));
 
-        return Predicates.and(filter, enabledFilter, advertisedFilter);
+        return Predicates.and(filter, enabledFilter, storeEnabledFilter, advertisedFilter);
     }
 
 
