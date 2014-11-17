@@ -286,7 +286,9 @@ public class GeoServerTileLayer extends TileLayer implements ProxyLayer {
         if (publishedInfo == null) {
             synchronized (this) {
                 if(publishedInfo == null) {
-                    Catalog catalog = GWC.get().getCatalog();
+                    // would like to use GWC.get(), but this would result in a circularity,
+                    // this method is called during the GWC own construction
+                    Catalog catalog = (Catalog) GeoServerExtensions.bean("catalog");
                     // see if it's a layer or a layer group
                     PublishedInfo work = catalog.getLayer(publishedId);
                     if (work == null) {
