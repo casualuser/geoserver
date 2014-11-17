@@ -16,6 +16,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.PublishedInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.PublishedType;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -173,5 +174,11 @@ public class DecoratingLayerGroupInfo extends AbstractDecorator<LayerGroupInfo> 
     @Override
     public String getPrefixedName() {
         return delegate.prefixedName();
+    }
+
+    @Override
+    public PublishedType getType() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

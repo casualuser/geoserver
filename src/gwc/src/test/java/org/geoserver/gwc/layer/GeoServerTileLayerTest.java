@@ -39,10 +39,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.Keyword;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.PublishedInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.PublishedType;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
@@ -145,7 +145,7 @@ public class GeoServerTileLayerTest {
         layerInfo.setResource(resource);
         layerInfo.setEnabled(true);
         layerInfo.setName("MockLayerInfoName");
-        layerInfo.setType(Type.VECTOR);
+        layerInfo.setType(PublishedType.VECTOR);
         StyleInfo defaultStyle = new StyleInfoImpl(null);
         defaultStyle.setName("default_style");
 

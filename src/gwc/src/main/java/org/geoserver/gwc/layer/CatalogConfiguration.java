@@ -28,6 +28,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.PublishedType;
 import org.geoserver.gwc.GWC;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.config.Configuration;
@@ -93,7 +94,8 @@ public class CatalogConfiguration implements Configuration {
                             + "' does not exist.");
                 }
 
-                tileLayer = new GeoServerTileLayer(layerId, gridSetBroker, tileLayerInfo);
+                tileLayer = new GeoServerTileLayer(geoServerCatalog, layerId, gridSetBroker,
+                        tileLayerInfo);
             } finally {
                 lock.readLock().unlock();
             }
@@ -435,11 +437,11 @@ public class CatalogConfiguration implements Configuration {
         
         // no sense in exposing a geometryless layer through wms...
         boolean wmsExposable = false;
-        if (layer.getType() == LayerInfo.Type.RASTER || layer.getType() == LayerInfo.Type.WMS) {
+        if (layer.getType() == PublishedType.RASTER || layer.getType() == PublishedType.WMS) {
             wmsExposable = true;
         } else {
             try {
-                wmsExposable = layer.getType() == LayerInfo.Type.VECTOR
+                wmsExposable = layer.getType() == PublishedType.VECTOR
                         && ((FeatureTypeInfo) layer.getResource()).getFeatureType()
                                 .getGeometryDescriptor() != null;
             } catch (Exception e) {

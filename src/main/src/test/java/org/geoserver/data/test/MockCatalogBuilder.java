@@ -484,7 +484,7 @@ public class MockCatalogBuilder {
     
         expect(l.getId()).andReturn(lId).anyTimes();
         expect(l.getName()).andReturn(name).anyTimes();
-        expect(l.getType()).andReturn(LayerInfo.Type.VECTOR).anyTimes();
+        expect(l.getType()).andReturn(PublishedType.VECTOR).anyTimes();
         expect(l.getResource()).andReturn(r).anyTimes();
         expect(l.getDefaultStyle()).andReturn(s).anyTimes();
         expect(l.isEnabled()).andReturn(true).anyTimes();

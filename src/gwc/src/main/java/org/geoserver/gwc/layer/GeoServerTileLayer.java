@@ -96,6 +96,8 @@ public class GeoServerTileLayer extends TileLayer implements ProxyLayer {
 
     private final GridSetBroker gridSetBroker;
     
+    private Catalog catalog;
+
     private String publishedId;
 
     volatile private PublishedInfo publishedInfo;
@@ -123,24 +125,28 @@ public class GeoServerTileLayer extends TileLayer implements ProxyLayer {
         TileLayerInfoUtil.checkAutomaticStyles(publishedInfo, state);
     }
 
-    public GeoServerTileLayer(final String publishedId, final GWCConfig configDefaults,
-            final GridSetBroker gridsets) {
+    public GeoServerTileLayer(final Catalog catalog, final String publishedId,
+            final GWCConfig configDefaults, final GridSetBroker gridsets) {
+        checkNotNull(catalog, "catalog");
         checkNotNull(publishedId, "publishedId");
         checkNotNull(gridsets, "gridsets");
         checkNotNull(configDefaults, "configDefaults");
 
         this.gridSetBroker = gridsets;
+        this.catalog = catalog;
         this.publishedId = publishedId;
         this.info = TileLayerInfoUtil.loadOrCreate(getPublishedInfo(), configDefaults);
     }
 
-    public GeoServerTileLayer(final String publishedId, final GridSetBroker gridsets,
-            final GeoServerTileLayerInfo state) {
+    public GeoServerTileLayer(final Catalog catalog, final String publishedId,
+            final GridSetBroker gridsets, final GeoServerTileLayerInfo state) {
+        checkNotNull(catalog, "catalog");
         checkNotNull(publishedId, "publishedId");
         checkNotNull(gridsets, "gridsets");
         checkNotNull(state, "state");
 
         this.gridSetBroker = gridsets;
+        this.catalog = catalog;
         this.publishedId = publishedId;
         this.info = state;
     }
@@ -286,9 +292,6 @@ public class GeoServerTileLayer extends TileLayer implements ProxyLayer {
         if (publishedInfo == null) {
             synchronized (this) {
                 if(publishedInfo == null) {
-                    // would like to use GWC.get(), but this would result in a circularity,
-                    // this method is called during the GWC own construction
-                    Catalog catalog = (Catalog) GeoServerExtensions.bean("catalog");
                     // see if it's a layer or a layer group
                     PublishedInfo work = catalog.getLayer(publishedId);
                     if (work == null) {

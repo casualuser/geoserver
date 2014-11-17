@@ -77,4 +77,9 @@ public interface PublishedInfo extends CatalogInfo {
      */
     List<LayerIdentifierInfo> getIdentifiers();
     
+    /**
+     * The type of the layer.
+     */
+    PublishedType getType();
+
 }

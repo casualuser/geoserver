@@ -37,6 +37,7 @@ import org.geoserver.catalog.Info;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.Predicates;
+import org.geoserver.catalog.PublishedInfo;
 import org.geoserver.catalog.impl.ClassMappings;
 import org.geoserver.ows.util.ClassProperties;
 import org.geotools.factory.CommonFactoryFinder;
@@ -646,6 +647,10 @@ public class DbMappings {
                 // HACK for derived property, ModificationProxy evaluates it to old value. Remove
                 // when layer name is decoupled from resource name
                 value = ((LayerInfo) object).getResource().getTitle();
+            } else if (object instanceof PublishedInfo
+                    && "prefixedName".equalsIgnoreCase(propertyName)) {
+                // HACK for derived property, it is not a regular javabean property
+                value = ((PublishedInfo) object).prefixedName();
             } else {
                 // proceed as it should
                 value = ff.property(propertyName).evaluate(object);

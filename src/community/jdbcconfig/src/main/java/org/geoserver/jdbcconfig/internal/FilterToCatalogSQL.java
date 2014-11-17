@@ -537,8 +537,13 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
      */
     @Override
     public Object visit(PropertyIsNil filter, Object extraData) {
+        final PropertyName propertyName = (PropertyName) filter.getExpression();
+        final String propertyTypesParam = propertyTypesParam(propertyName);
 
-        return extraData;
+        StringBuilder builder = append(extraData,
+                "oid IN (select oid from object_property where property_type in (:",
+                propertyTypesParam, ") and value IS NULL) /* ", filter.toString(), " */ \n");
+        return builder;
     }
 
     /**

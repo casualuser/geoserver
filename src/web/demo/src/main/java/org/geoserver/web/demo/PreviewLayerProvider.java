@@ -170,7 +170,14 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
         Filter advertisedFilter = Predicates.or(Predicates.isNull("resource.advertised"),
                 Predicates.equal("resource.advertised", true));
 
-        return Predicates.and(filter, enabledFilter, storeEnabledFilter, advertisedFilter);
+        // return only layer groups that are not containers
+        Filter nonContainerGroup = Predicates.or(Predicates.isNull("mode"),
+                Predicates.equal("mode", LayerGroupInfo.Mode.EO),
+                Predicates.equal("mode", LayerGroupInfo.Mode.NAMED),
+                Predicates.equal("mode", LayerGroupInfo.Mode.SINGLE));
+
+        return Predicates.and(filter, enabledFilter, storeEnabledFilter, advertisedFilter,
+                nonContainerGroup);
     }
 
 

@@ -90,7 +90,7 @@ public class PredicatesTest {
         vectorLayer.setEnabled(true);
         vectorLayer.setName("vectorLayer");
         vectorLayer.setId("vectorLayerId");
-        vectorLayer.setType(LayerInfo.Type.VECTOR);
+        vectorLayer.setType(PublishedType.VECTOR);
 
         defaultStyle = new StyleInfoImpl(null);
         defaultStyle.setName("default");

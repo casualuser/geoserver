@@ -18,6 +18,7 @@ import java.util.Set;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.PublishedType;
 import org.geoserver.gwc.GWC;
 import org.geoserver.gwc.config.GWCConfig;
 import org.geowebcache.grid.GridSetBroker;
@@ -65,9 +66,9 @@ public class CatalogConfigurationTest {
         defaults.setCacheLayersByDefault(false);
         defaults.setCacheNonDefaultStyles(true);
 
-        layer1 = mockLayer("layer1", new String[]{}, LayerInfo.Type.RASTER);
-        layer2 = mockLayer("layer2", new String[]{}, LayerInfo.Type.RASTER);
-        layerWithNoTileLayer = mockLayer("layerWithNoTileLayer", new String[]{}, LayerInfo.Type.RASTER);
+        layer1 = mockLayer("layer1", new String[]{}, PublishedType.RASTER);
+        layer2 = mockLayer("layer2", new String[]{}, PublishedType.RASTER);
+        layerWithNoTileLayer = mockLayer("layerWithNoTileLayer", new String[]{}, PublishedType.RASTER);
 
 
         group1 = mockGroup("group1", layer1, layer2);
@@ -380,7 +381,7 @@ public class CatalogConfigurationTest {
         when(featureTypeWithNoGeometry.getGeometryDescriptor()).thenReturn(null);
         org.geoserver.catalog.FeatureTypeInfo resourceWithNoGeometry = mock(org.geoserver.catalog.FeatureTypeInfo.class);
         when(resourceWithNoGeometry.getFeatureType()).thenReturn(featureTypeWithNoGeometry);
-        LayerInfo layerWithNoGeometry = mockLayer("layerWithNoGeometry", new String[]{}, LayerInfo.Type.VECTOR);
+        LayerInfo layerWithNoGeometry = mockLayer("layerWithNoGeometry", new String[]{}, PublishedType.VECTOR);
         layerWithNoGeometry.setResource(resourceWithNoGeometry);
         GeoServerTileLayer tl = mock(GeoServerTileLayer.class);
         GeoServerTileLayerInfo info = new GeoServerTileLayerInfoImpl();
