@@ -7,23 +7,32 @@ package org.geoserver.web.admin;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.util.CloseableIterator;
 import org.geoserver.config.CoverageAccessInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.LockingManager;
+import org.geotools.util.logging.Logging;
+import org.opengis.filter.Filter;
 /** 
  * 
  * @author Arne Kepp, The Open Planning Project
  */
 @SuppressWarnings("serial")
 public abstract class ServerAdminPage extends GeoServerSecuredPage {
+    
+    private final static Logger LOGGER = Logging.getLogger(ServerAdminPage.class);
+    
     private static final long serialVersionUID = 4712657652337914993L;
 
     public IModel getGeoServerModel(){
@@ -97,8 +106,8 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
 
     private synchronized int getLockCount(){
         int count = 0;
-
-        for (Iterator i = getDataStores().iterator(); i.hasNext();) {
+        CloseableIterator<DataStoreInfo> i = null;
+        for (i = getDataStores(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
@@ -121,14 +130,24 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
                 continue;
             }
         }
+        
+        try{
+            if(i != null){
+                i.close();
+            }
+        } catch (Exception e){
+            if(LOGGER.isLoggable(Level.SEVERE)){
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
 
         return count;
     }
 
     private synchronized int getConnectionCount() {
         int count = 0;
-
-        for (Iterator i = getDataStores().iterator(); i.hasNext();) {
+        CloseableIterator<DataStoreInfo> i = null;
+        for (i = getDataStores(); i.hasNext();) {
             DataStoreInfo meta = (DataStoreInfo) i.next();
 
             if (!meta.isEnabled()) {
@@ -145,12 +164,23 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
 
             count += 1;
         }
+        try{
+            if(i != null){
+                i.close();
+            }
+        } catch (Exception e){
+            if(LOGGER.isLoggable(Level.SEVERE)){
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
 
         return count;
     }
 
-    private List<DataStoreInfo> getDataStores(){
-        return getGeoServerApplication().getGeoServer().getCatalog().getDataStores();
+    private CloseableIterator<DataStoreInfo> getDataStores(){
+        Catalog catalog = getGeoServerApplication().getGeoServer().getCatalog();
+        return catalog.list(DataStoreInfo.class, Filter.INCLUDE);
+        //return catalog.getDataStores();
     }
 }
 
