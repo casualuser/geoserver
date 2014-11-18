@@ -31,8 +31,6 @@ import org.opengis.filter.Filter;
 @SuppressWarnings("serial")
 public abstract class ServerAdminPage extends GeoServerSecuredPage {
     
-    private final static Logger LOGGER = Logging.getLogger(ServerAdminPage.class);
-    
     private static final long serialVersionUID = 4712657652337914993L;
 
     public IModel getGeoServerModel(){
