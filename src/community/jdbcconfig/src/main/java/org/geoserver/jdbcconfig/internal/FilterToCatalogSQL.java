@@ -523,8 +523,8 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
         StringBuilder builder = append(extraData,
                 "oid IN (select oid from object_property where property_type in (:",
                 propertyTypesParam,
-                ") and value IS NULL) OR oid IN (select oid from object where oid not in (select oid from object_property where property_type in (:"
-                        + propertyTypesParam + "))) /* ", filter.toString(), " */ \n");
+                ") and value IS NULL) OR oid NOT  in (select oid from object_property where property_type in (:"
+                        + propertyTypesParam + ")) /* ", filter.toString(), " */ \n");
         return builder;
     }
 
