@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.geoserver.function.IsInstanceOf;
 import org.geotools.filter.Capabilities;
 import org.geotools.filter.LikeFilterImpl;
 import org.opengis.filter.And;
@@ -37,6 +38,7 @@ import org.opengis.filter.PropertyIsNull;
 import org.opengis.filter.capability.FilterCapabilities;
 import org.opengis.filter.expression.Add;
 import org.opengis.filter.expression.Divide;
+import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.ExpressionVisitor;
 import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
@@ -87,6 +89,7 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
         builder.addType(PropertyIsNil.class);// whether the property exists AND it's value is null
         builder.addType(And.class);
         builder.addType(Or.class);
+        builder.addName(IsInstanceOf.NAME.getName());
 
         CAPABILITIES = builder.getContents();
     }
@@ -209,6 +212,11 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
             
         } else {
             
+            if(filter.getExpression1() instanceof IsInstanceOf){
+                StringBuilder builder = append(extraData, handleInstanceOf((IsInstanceOf) filter.getExpression1()));
+                return builder; 
+            }
+            
             //comparing a literal with a field
             
             PropertyName expression1;
@@ -264,6 +272,20 @@ public class FilterToCatalogSQL implements FilterVisitor, ExpressionVisitor {
     
             return builder;
         }
+    }
+
+    private String handleInstanceOf(IsInstanceOf instanceOf) {
+        Expression expression1 = instanceOf.getParameters().get(0);
+        
+        Class clazz = expression1.evaluate(null, Class.class);
+
+        if(clazz == null || dbMappings.getTypeId(clazz) == null){
+            return "(1=0) /* EXCLUDE */\n";
+        }
+        
+        Integer typeId = dbMappings.getTypeId(clazz);
+        
+        return "type_id = " + typeId + "/* isInstanceOf " + clazz.toString() + " */ \n";
     }
 
     /**

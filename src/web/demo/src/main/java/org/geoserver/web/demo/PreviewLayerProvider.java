@@ -161,23 +161,44 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
     @Override
     protected Filter getFilter() {
         Filter filter = super.getFilter();
-
+        
         // need to get only advertised and enabled layers
-        Filter enabledFilter = Predicates.or(Predicates.isNull("resource.enabled"),
-                Predicates.equal("resource.enabled", true));
-        Filter storeEnabledFilter = Predicates.or(Predicates.isNull("resource.store.enabled"),
-                Predicates.equal("resource.store.enabled", true));
-        Filter advertisedFilter = Predicates.or(Predicates.isNull("resource.advertised"),
-                Predicates.equal("resource.advertised", true));
+        Filter isLayerInfo = Predicates.isInstanceOf(LayerInfo.class);
+        Filter isLayerGroupInfo = Predicates.isInstanceOf(LayerGroupInfo.class);
+        
+        
+        
+        Filter enabledFilter = Predicates.equal("resource.enabled", true);
+        Filter storeEnabledFilter = Predicates.equal("resource.store.enabled", true);
+        Filter advertisedFilter = Predicates.equal("resource.advertised", true);
 
         // return only layer groups that are not containers
-        Filter nonContainerGroup = Predicates.or(Predicates.isNull("mode"),
+        Filter nonContainerGroup = Predicates.or(
                 Predicates.equal("mode", LayerGroupInfo.Mode.EO),
                 Predicates.equal("mode", LayerGroupInfo.Mode.NAMED),
                 Predicates.equal("mode", LayerGroupInfo.Mode.SINGLE));
+        
+        Filter layerFilter = Predicates.and(isLayerInfo, enabledFilter, storeEnabledFilter,
+                advertisedFilter);
+        
+        Filter layerGroupFilter = Predicates.and(isLayerGroupInfo, nonContainerGroup);
 
-        return Predicates.and(filter, enabledFilter, storeEnabledFilter, advertisedFilter,
-                nonContainerGroup);
+        Filter orFilter = Predicates.or(layerFilter, layerGroupFilter);
+//        // need to get only advertised and enabled layers
+//        Filter enabledFilter = Predicates.or(Predicates.isNull("resource.enabled"),
+//                Predicates.equal("resource.enabled", true));
+//        Filter storeEnabledFilter = Predicates.or(Predicates.isNull("resource.store.enabled"),
+//                Predicates.equal("resource.store.enabled", true));
+//        Filter advertisedFilter = Predicates.or(Predicates.isNull("resource.advertised"),
+//                Predicates.equal("resource.advertised", true));
+//
+//        // return only layer groups that are not containers
+//        Filter nonContainerGroup = Predicates.or(Predicates.isNull("mode"),
+//                Predicates.equal("mode", LayerGroupInfo.Mode.EO),
+//                Predicates.equal("mode", LayerGroupInfo.Mode.NAMED),
+//                Predicates.equal("mode", LayerGroupInfo.Mode.SINGLE));
+
+        return Predicates.and(filter, orFilter);
     }
 
 

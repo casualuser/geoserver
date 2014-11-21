@@ -271,5 +271,9 @@ public class Predicates {
     public static SortBy sortBy(final String propertyName, final boolean ascending) {
         return factory.sort(propertyName, ascending ? SortOrder.ASCENDING : SortOrder.DESCENDING);
     }
+    
+    public static Filter isInstanceOf(Class clazz){
+        return factory.equals(factory.function("isInstanceOf", factory.literal(clazz)), factory.literal(true));
+    }
 
 }
