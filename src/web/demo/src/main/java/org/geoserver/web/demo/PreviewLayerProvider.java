@@ -6,7 +6,6 @@
 package org.geoserver.web.demo;
 
 
-<<<<<<< HEAD
 import java.util.ArrayList;
 
 import java.io.Serializable;
@@ -72,10 +71,7 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
         sizeCaller = new SizeCallable();
         
         fullSizeCaller = new FullSizeCallable();
-    }
-    
-    public static final FilterFactory2 FF = CommonFactoryFinder.getFilterFactory2();
-    
+    }    
 
     public static final Property<PreviewLayer> TYPE = new BeanProperty<PreviewLayer>(
             "type", "type");
