@@ -235,6 +235,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         
         private final boolean skipping;
 
+        private WMSInfo serviceInfo;
+
         /**
          * Creates a new CapabilitiesTranslator object.
          * 
@@ -250,6 +252,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             this.getMapFormats = getMapFormats;
             this.getLegendGraphicFormats = getLegendGraphicFormats;
             this.extCapsProviders = extCapsProviders;
+            this.serviceInfo = wmsConfig.getServiceInfo();
             
             this.dimensionHelper = new DimensionHelper(Mode.WMS11, wmsConfig) {
                 
@@ -302,7 +305,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         private void handleService() {
             start("Service");
 
-            final WMSInfo serviceInfo = wmsConfig.getServiceInfo();
             element("Name", "OGC:WMS");
             element("Title", serviceInfo.getTitle());
             element("Abstract", serviceInfo.getAbstract());
@@ -591,7 +593,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                         public void end(String element) {
                             CapabilitiesTranslator.this.end(element);
                         }
-                    }, wmsConfig.getServiceInfo(), request);
+                    }, serviceInfo, request);
                 } catch (Exception e) {
                     throw new ServiceException("Extended capabilities provider threw error", e);
                 }
@@ -641,7 +643,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                 layers = wmsConfig.getLayers();
             }
 
-            WMSInfo serviceInfo = wmsConfig.getServiceInfo();
+            //WMSInfo serviceInfo = wmsConfig.getServiceInfo();
             element("Title", serviceInfo.getTitle());
             element("Abstract", serviceInfo.getAbstract());
 
@@ -1346,10 +1348,10 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         private void handleAdditionalBBox(ReferencedEnvelope bbox, String srs, LayerInfo layer) {
             //TODO: this method is copied from wms 1.3 caps (along with a lot of things), we 
             // should refactor
-            WMSInfo info = wmsConfig.getServiceInfo();
-            if (info.isBBOXForEachCRS() && !info.getSRS().isEmpty()) {
+            //WMSInfo info = wmsConfig.getServiceInfo();
+            if (serviceInfo.isBBOXForEachCRS() && !serviceInfo.getSRS().isEmpty()) {
                 //output bounding box for each supported service srs
-                for (String crs : info.getSRS()) {
+                for (String crs : serviceInfo.getSRS()) {
                     crs = qualifySRS(crs);
                     if (srs != null && crs.equals(srs)) {
                         continue; //already did this one
