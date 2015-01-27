@@ -58,9 +58,7 @@
 				<entry key="COMPRESSION_RATE" value="0.75" />
 			</map>
 		</constructor-arg>
-		<property name="disablePNG">
-			<value>FALSE</value>
-		</property>
+
 	</bean>
 
 	<bean id="GIFEncoder" class="org.geowebcache.io.ImageEncoderImpl">
