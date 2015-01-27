@@ -10,16 +10,21 @@ import java.util.regex.Pattern;
 
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.geoserver.platform.GeoServerExtensions;
+import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
 
 /**
- * Checks a string conforms to the XML Name production as declared at {@link http
- * ://www.w3.org/TR/REC-xml/#NT-Name}
+ * Checks a string conforms to the XML Name production as declared at {@link http ://www.w3.org/TR/REC-xml/#NT-Name}
  * 
  * @author aaime
  * 
  */
 @SuppressWarnings("serial")
 public class XMLNameValidator extends AbstractValidator {
+
+    private final static Boolean DISABLE_WORKSPACE_VALIDATION = Boolean
+            .parseBoolean(GeoServerExtensions.getProperty("DISABLE_WORKSPACE_VALIDATION"));
+
     private static Pattern XML_NAME_PATTERN;
 
     static {
@@ -42,7 +47,8 @@ public class XMLNameValidator extends AbstractValidator {
     @Override
     protected void onValidate(IValidatable validatable) {
         String value = (String) validatable.getValue();
-        if (!XML_NAME_PATTERN.matcher(value).matches()) {
+        if ((DISABLE_WORKSPACE_VALIDATION == null || !DISABLE_WORKSPACE_VALIDATION)
+                && !XML_NAME_PATTERN.matcher(value).matches()) {
             error(validatable, "invalidXMLName", Collections.singletonMap("name", value));
         }
 
