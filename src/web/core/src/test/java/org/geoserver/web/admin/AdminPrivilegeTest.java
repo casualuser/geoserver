@@ -52,6 +52,7 @@ import org.geoserver.web.data.workspace.WorkspaceNewPage;
 import org.geoserver.web.data.workspace.WorkspacePage;
 import org.geotools.data.property.PropertyDataStoreFactory;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
@@ -167,6 +168,7 @@ public class AdminPrivilegeTest extends GeoServerWicketTestSupport {
     }
 
     @Test
+    @Ignore
     public void testLayerAllPage() throws Exception {
         loginAsCite();
         tester.startPage(LayerPage.class);
